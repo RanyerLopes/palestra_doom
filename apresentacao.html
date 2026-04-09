@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOOM — A História por Trás do Lendário FPS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+    /* ── Variáveis ─────────────────────────────────── */
+    :root {
+      --red:    #e03030;
+      --orange: #e74c3c;
+      --yellow: #f39c12;
+      --dark:   #0d0000;
+      --dim:    #aaaaaa;
+    }
+
+    /* ── Base ──────────────────────────────────────── */
+    html, body { background: var(--dark); }
+    .reveal-viewport { background: var(--dark); }
+    .reveal { font-family: 'Share Tech Mono', monospace; color: #d0d0d0; }
+
+    /* ── Tipografia ────────────────────────────────── */
+    .reveal h1, .reveal h2, .reveal h3 { font-family: 'Orbitron', sans-serif; text-transform: uppercase; }
+    .reveal h1 { color: var(--orange); text-shadow: 0 0 30px var(--orange); font-size: 3.0em; letter-spacing: 8px; }
+    .reveal h2 { color: var(--red); font-size: 2.0em; letter-spacing: 2px; border-bottom: 2px solid var(--red); padding-bottom: 8px; margin-bottom: 16px; }
+    .reveal h3 { color: var(--yellow); font-size: 1.25em; letter-spacing: 1px; margin: 0 0 8px 0; }
+    .reveal p  { font-size: 1.1em; line-height: 1.6; margin: 0 0 8px 0; }
+    .reveal strong { color: var(--orange); }
+    .reveal ul { list-style: none; padding: 0; margin: 0; }
+    .reveal ul li { font-size: 1.05em; line-height: 1.7; }
+    .reveal ul li::before { content: '> '; color: var(--orange); }
+
+    /* ── Glow animado para o logo ──────────────────── */
+    @keyframes glow {
+      from { text-shadow: 0 0 10px var(--orange), 0 0 30px var(--orange), 3px 3px 0 #5a0000; }
+      to   { text-shadow: 0 0 20px var(--orange), 0 0 60px #c0392b,      3px 3px 0 #5a0000; }
+    }
+    .doom-title {
+      animation: glow 2s ease-in-out infinite alternate;
+      letter-spacing: 14px !important;
+      font-size: 3.4em !important;
+    }
+
+    /* ── Divisor ───────────────────────────────────── */
+    .divider { height: 1px; background: linear-gradient(90deg, transparent, var(--red), transparent); margin: 8px 0; }
+
+    /* ── Badge ─────────────────────────────────────── */
+    .badge {
+      display: inline-block; background: var(--red); color: #fff;
+      font-family: 'Orbitron', sans-serif; font-size: 0.75em; font-weight: 700;
+      padding: 5px 20px; border-radius: 3px; letter-spacing: 2px;
+      box-shadow: 0 0 16px rgba(224,48,48,.5);
+    }
+
+    /* ── Grid 2 colunas ────────────────────────────── */
+    .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+    .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; width: 100%; }
+
+    /* ── Card ──────────────────────────────────────── */
+    .card {
+      background: #110000; border: 1px solid #3a0000;
+      border-left: 3px solid var(--red); border-radius: 4px;
+      padding: 10px 12px; text-align: left;
+    }
+    .card h3  { color: var(--orange) !important; font-size: 1.1em !important; }
+    .card p   { color: #aaa; font-size: 0.95em !important; margin: 0 !important; line-height: 1.5; }
+
+    /* ── Stat box ──────────────────────────────────── */
+    .stats { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; width: 100%; }
+    .stat  {
+      background: #110000; border: 1px solid var(--red);
+      border-radius: 5px; padding: 8px 14px; text-align: center; min-width: 90px;
+    }
+    .stat b { display: block; font-family: 'Orbitron', sans-serif; font-size: 2.0em; color: var(--orange); }
+    .stat s { display: block; font-size: 0.85em; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+    /* ── Person card ───────────────────────────────── */
+    .pcard { background: #110000; border: 1px solid #3a1010; border-radius: 6px; padding: 10px 8px; text-align: center; }
+    .pcard .icon { font-size: 2.4em; display: block; margin-bottom: 6px; }
+    .pcard h3 { font-size: 1.1em !important; }
+    .pcard p  { font-size: 0.92em !important; color: #999; margin: 0 !important; }
+
+    /* ── Quote ─────────────────────────────────────── */
+    .quote {
+      background: #110000; border-left: 4px solid var(--orange);
+      border-radius: 0 6px 6px 0; padding: 10px 16px;
+      font-style: italic; font-size: 1.05em; color: #ccc; text-align: left;
+    }
+    .quote em { display: block; text-align: right; color: var(--orange); font-style: normal; margin-top: 5px; font-family: 'Orbitron', sans-serif; font-size: 0.85em; }
+
+    /* ── Highlight box ─────────────────────────────── */
+    .hbox {
+      background: rgba(192,57,43,.12); border: 1px solid rgba(192,57,43,.4);
+      border-radius: 6px; padding: 8px 14px;
+    }
+
+    /* ── Code block ────────────────────────────────── */
+    .code {
+      background: #050505; border-left: 3px solid var(--orange);
+      border-radius: 3px; padding: 10px 12px;
+      font-size: 0.92em; color: #0f0; text-align: left; line-height: 1.6;
+    }
+    .code .c { color: #555; }
+    .code .k { color: #e74c3c; }
+    .code .s { color: var(--yellow); }
+    .code .f { color: #3498db; }
+
+    /* ── Timeline ──────────────────────────────────── */
+    .tl { list-style: none !important; padding: 0; position: relative; text-align: left; }
+    .tl::before { content:''; position:absolute; left:10px; top:0; bottom:0; width:2px; background:var(--red); }
+    .tl li { padding-left: 28px !important; margin-bottom: 8px; position:relative; font-size:1.0em !important; }
+    .tl li::before { content:'' !important; position:absolute; left:5px; top:5px; width:11px; height:11px; background:var(--orange); border-radius:50%; }
+    .tl li strong { display:block; color:var(--yellow); }
+    .tl li span   { color:#aaa; }
+
+    /* ── Tags ──────────────────────────────────────── */
+    .tag { display:inline-block; background:rgba(192,57,43,.18); border:1px solid var(--red); color:var(--orange); font-size:0.92em; padding:4px 14px; border-radius:20px; margin:3px; }
+
+    /* ── Legenda pequena ───────────────────────────── */
+    .sub  { font-size: 1.0em !important; color: var(--dim) !important; margin-bottom: 12px !important; }
+    .note { font-size: 0.82em !important; color: #555 !important; margin-top: 6px !important; }
+
+    /* ── Quem sou eu ───────────────────────────────── */
+    .intro-wrap {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 40px;
+      align-items: center;
+      width: 100%;
+      text-align: left;
+    }
+    .intro-photo {
+      width: 260px;
+      height: 320px;
+      object-fit: cover;
+      object-position: top;
+      border-radius: 8px;
+      border: 3px solid var(--red);
+      box-shadow: 0 0 30px rgba(224,48,48,.4);
+      display: block;
+    }
+    .intro-info h1 {
+      font-size: 1.8em !important;
+      letter-spacing: 3px !important;
+      margin-bottom: 6px !important;
+    }
+    .intro-info .role {
+      font-size: 0.82em;
+      color: var(--orange);
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+    }
+    .intro-info ul li { font-size: 0.78em; line-height: 1.8; }
+
+    /* ── Cores utilitárias ─────────────────────────── */
+    .r { color: var(--red);    }
+    .o { color: var(--orange); }
+    .y { color: var(--yellow); }
+    .d { color: var(--dim);    }
+  </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ════════════════════════════════════════════════════
+     1 — TÍTULO
+════════════════════════════════════════════════════ -->
+<section data-background-color="#100000" data-transition="zoom">
+  <p class="note" style="font-size:.55em;color:#444;letter-spacing:4px;margin-bottom:0;">id Software apresenta</p>
+  <h1 class="doom-title">DOOM</h1>
+  <p style="font-size:.7em;color:#888;letter-spacing:3px;margin:4px 0 10px;">A HISTÓRIA DO JOGO QUE DEFINIU UM GÊNERO</p>
+  <div class="divider"></div>
+  <p style="font-size:.65em;color:#aaa;margin:8px 0 14px;">Como uma pequena equipe criou o FPS mais icônico de todos os tempos</p>
+  <span class="badge">1993</span>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     2 — QUEM SOU EU
+════════════════════════════════════════════════════ -->
+<section data-background-color="#0d0000" data-transition="fade">
+  <div class="intro-wrap">
+    <img class="intro-photo" src="Imagem do WhatsApp de 2024-09-15 à(s) 13.58.15_b755e9a2.jpg" alt="Ranyer Lopes">
+    <div class="intro-info">
+      <p style="font-size:.6em;color:#444;letter-spacing:4px;margin-bottom:4px;">APRESENTAÇÃO</p>
+      <h1>Ranyer Lopes</h1>
+      <p class="role">Desenvolvedor Front-End</p>
+      <div class="divider" style="margin-bottom:14px;"></div>
+      <ul>
+        <li class="fragment">🎮 Ex-NPC, gamer nas horas vagas</li>
+        <li class="fragment">🎵 Músico</li>
+        <li class="fragment">✏️ Desenhista nas horas vagas</li>
+        <li class="fragment">💻 Mais conhecido como aquele que tem vários nomes</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     3 — CONTEXTO
+════════════════════════════════════════════════════ -->
+<section data-background-color="#0d0000" data-transition="fade">
+  <h2>O Cenário</h2>
+  <p class="sub">Início dos anos 90 — o mundo dos games estava prestes a mudar</p>
+
+  <div class="stats">
+    <div class="stat"><b>1993</b><s>Lançamento</s></div>
+    <div class="stat"><b>486</b><s>CPU alvo</s></div>
+    <div class="stat"><b>9</b><s>Pessoas</s></div>
+    <div class="stat"><b>#1</b><s>FPS da história</s></div>
+  </div>
+
+  <div class="divider" style="margin:12px 0;"></div>
+
+  <div class="hbox">
+    <p style="margin:0;font-size:.68em;">
+      MS-DOS dominava os PCs. RAM era escassa. Gráficos 3D em tempo real eram considerados
+      <strong>impossíveis</strong>. A id Software discordou.
+    </p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     3 — id SOFTWARE
+════════════════════════════════════════════════════ -->
+<section data-background-color="#0d0000" data-transition="slide">
+  <h2>id Software</h2>
+  <p class="sub">A equipe pequena com ideias gigantes</p>
+
+  <div class="g3">
+    <div class="pcard">
+      <span class="icon">💻</span>
+      <h3>John Carmack</h3>
+      <p>Arquiteto do motor gráfico revolucionário</p>
+    </div>
+    <div class="pcard">
+      <span class="icon">🎮</span>
+      <h3>John Romero</h3>
+      <p>Designer de levels — alma criativa do gameplay</p>
+    </div>
+    <div class="pcard">
+      <span class="icon">🎨</span>
+      <h3>Adrian Carmack</h3>
+      <p>Artista — criou sprites, texturas e o visual sombrio</p>
+    </div>
+  </div>
+
+  <div class="divider" style="margin:10px 0;"></div>
+
+  <ul>
+    <li class="fragment">Fundada em <strong>1991</strong> em Shreveport, Louisiana</li>
+    <li class="fragment">Antes do DOOM: <strong>Commander Keen</strong> e <strong>Wolfenstein 3D</strong></li>
+    <li class="fragment">Filosofia: <strong>tecnologia + criatividade</strong> acima de tudo</li>
+  </ul>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     4 — JOHN CARMACK
+════════════════════════════════════════════════════ -->
+<section data-background-color="#0d0000" data-transition="convex">
+  <h2>John Carmack</h2>
+  <p class="sub">O programador que desafiou os limites do hardware</p>
+
+  <div class="quote" style="margin-bottom:12px;">
+    Velocidade acima de tudo. O jogo precisa rodar rápido mesmo nas máquinas mais modestas.
+    <em>— Filosofia de Carmack</em>
+  </div>
+
+  <div class="g2">
+    <div>
+      <h3 style="margin-bottom:6px;">Prioridades</h3>
+      <ul>
+        <li class="fragment">Performance &gt; Realismo</li>
+        <li class="fragment">Hardware acessível (486)</li>
+        <li class="fragment">Motor customizado do zero</li>
+        <li class="fragment">Ilusão de 3D, não 3D real</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="margin-bottom:6px;">Conquistas técnicas</h3>
+      <ul>
+        <li class="fragment">Binary Space Partition (BSP)</li>
+        <li class="fragment">Raycasting otimizado</li>
+        <li class="fragment">Texture mapping em tempo real</li>
+        <li class="fragment">Renderização pseudo-3D eficiente</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     5 — FERRAMENTAS
+════════════════════════════════════════════════════ -->
+<section data-background-color="#0d0000" data-transition="fade">
+  <h2>As Ferramentas</h2>
+  <p class="sub">Tecnologia de ponta para criar algo nunca visto</p>
+
+  <div class="g2">
+    <div class="card fragment">
+      <h3>Computadores NeXT</h3>
+      <p>Estabilidade e ferramentas de desenvolvimento superiores ao Windows da época. Steve Jobs fundou a NeXT após sair da Apple.</p>
+    </div>
+    <div class="card fragment">
+      <h3>DOS4GW</h3>
+      <p>Extensor de memória que permitia acessar mais de <strong>640KB de RAM</strong> no MS-DOS — barreira que aprisionava outros jogos.</p>
+    </div>
+    <div class="card fragment">
+      <h3>Linguagem C + Assembly</h3>
+      <p>Motor escrito em C com trechos críticos em <strong>Assembly x86</strong>, extraindo cada ciclo de clock disponível.</p>
+    </div>
+    <div class="card fragment">
+      <h3>Ferramentas Internas</h3>
+      <p>A equipe criou seus próprios editores de mapas e assets — nenhuma ferramenta comercial era <strong>boa o suficiente</strong>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     6 — MOTOR GRÁFICO
+════════════════════════════════════════════════════ -->
+<section data-background-color="#0d0000" data-transition="slide">
+  <h2>O Motor Gráfico</h2>
+  <p class="sub">Pseudo-3D — a ilusão que enganou uma geração</p>
+
+  <div class="hbox" style="margin-bottom:10px;">
+    <p style="margin:0;font-size:.68em;text-align:center;">
+      O DOOM <strong>NÃO é 3D de verdade</strong> — é um mapa 2D renderizado com alturas simuladas.<br>
+      <span class="d">Mas ninguém percebeu. E esse era exatamente o plano.</span>
+    </p>
+  </div>
+
+  <div class="g2">
+    <div>
+      <h3 style="margin-bottom:6px;">Técnicas utilizadas</h3>
+      <ul>
+        <li class="fragment"><strong>BSP Tree</strong> — divisão binária do espaço</li>
+        <li class="fragment"><strong>Setores</strong> — regiões com altura e textura próprias</li>
+        <li class="fragment"><strong>Texture mapping</strong> — texturas em perspectiva</li>
+      </ul>
+    </div>
+    <div class="code fragment">
+      <span class="c">// Conceito BSP simplificado</span><br>
+      <span class="k">void</span> <span class="f">renderBSP</span>(node) {<br>
+      &nbsp;&nbsp;<span class="k">if</span> (isLeaf(node)) {<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="f">drawSector</span>(node);<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="k">return</span>;<br>
+      &nbsp;&nbsp;}<br>
+      &nbsp;&nbsp;<span class="f">renderBSP</span>(front);<br>
+      &nbsp;&nbsp;<span class="f">renderBSP</span>(back);<br>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     7 — RAYCASTING
+════════════════════════════════════════════════════ -->
+<section data-background-color="#0d0000" data-transition="slide">
+  <h2>Raycasting</h2>
+  <p class="sub">A matemática por trás do 3D de DOOM</p>
+
+  <div class="g2" style="align-items:start;margin-top:6px;">
+    <div>
+      <h3 style="margin-bottom:8px;">Como funciona?</h3>
+      <ul>
+        <li class="fragment">Para cada coluna de pixels na tela, um <strong>raio</strong> é lançado</li>
+        <li class="fragment">O raio calcula a distância até a parede mais próxima</li>
+        <li class="fragment">Paredes mais longe → fatia de pixels <strong>menor</strong></li>
+        <li class="fragment">Paredes mais perto → fatia de pixels <strong>maior</strong></li>
+        <li class="fragment">Resultado: ilusão de <strong>perspectiva 3D</strong> com custo mínimo de CPU</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="margin-bottom:8px;">Por que era revolucionário?</h3>
+      <div class="card fragment">
+        <h3>Hardware de 1993</h3>
+        <p>386/486 sem GPU dedicada. Raycasting gerava pseudo-3D a 35 fps em tempo real.</p>
+      </div>
+      <div class="card fragment" style="margin-top:8px;">
+        <h3>DOOM vs Wolfenstein</h3>
+        <p>Wolf3D usava raycasting puro — paredes sempre a 90°. Carmack adicionou <strong>alturas variáveis, pisos e tetos</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="code fragment" style="margin-top:10px;">
+    <span class="c">// Pseudocódigo simplificado do raycasting</span><br>
+    <span class="k">for</span> (col = 0; col &lt; screenWidth; col++) &#123;&nbsp;
+    <span class="f">castRay</span>(angle); &nbsp;<span class="f">drawWallSlice</span>(dist); &#125;
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     8 — OS INIMIGOS
+════════════════════════════════════════════════════ -->
+<section data-background-color="#0d0000" data-transition="convex">
+  <h2>Os Inimigos</h2>
+  <p class="sub">A técnica inusitada que deu vida aos demônios</p>
+
+  <div class="quote fragment" style="margin-bottom:10px;">
+    Os inimigos não eram modelos 3D. Eram <strong>fotografias</strong> de esculturas de gesso
+    digitalizadas em diferentes ângulos.
+    <em>— Adrian Carmack</em>
+  </div>
+
+  <div class="stats fragment" style="margin-bottom:10px;">
+    <div class="stat"><b>8</b><s>Ângulos por inimigo</s></div>
+    <div class="stat"><b>Gesso</b><s>Material dos modelos</s></div>
+    <div class="stat"><b>Sprite</b><s>Técnica de renderização</s></div>
+  </div>
+
+  <ul>
+    <li class="fragment">Sprites 2D sempre voltados ao jogador — <strong>billboarding</strong></li>
+    <li class="fragment">Cada frame de animação = uma foto digitalizada do modelo físico</li>
+    <li class="fragment">Resultado: visual único e visceral que marcou toda uma geração</li>
+  </ul>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     8 — FORMATO WAD
+════════════════════════════════════════════════════ -->
+<section data-background-color="#0d0000" data-transition="fade">
+  <h2>O Formato WAD</h2>
+  <p class="sub"><em>"Where's All the Data?"</em></p>
+
+  <div class="g2">
+    <div>
+      <h3 style="margin-bottom:6px;">O que é?</h3>
+      <ul>
+        <li class="fragment">Arquivo único com <strong>todos os dados</strong> do jogo</li>
+        <li class="fragment">Mapas, texturas, sons, sprites — tudo em um container</li>
+        <li class="fragment">Separação total entre <strong>engine e conteúdo</strong></li>
+        <li class="fragment">Fácil de modificar sem tocar no executável</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="margin-bottom:6px;">Impacto</h3>
+      <ul>
+        <li class="fragment">Nascimento do <strong>modding moderno</strong></li>
+        <li class="fragment">Comunidade criou milhares de WADs customizados</li>
+        <li class="fragment">Base para <strong>Quake, Half-Life</strong> e toda geração seguinte</li>
+        <li class="fragment">Conceito vivo até hoje: <em>Steam Workshop</em></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="code fragment" style="margin-top:10px;">
+    <span class="c">// Estrutura de um arquivo .WAD</span><br>
+    <span class="s">"IWAD"</span> → identificador &nbsp;|&nbsp; <span class="f">numlumps</span> → nº de itens &nbsp;|&nbsp; <span class="f">infotableofs</span> → índice
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     9 — MULTIPLAYER
+════════════════════════════════════════════════════ -->
+<section data-background-color="#0d0000" data-transition="slide">
+  <h2>Multiplayer</h2>
+  <p class="sub">O modo que travou escritórios no mundo inteiro</p>
+
+  <div class="g2">
+    <div class="card fragment">
+      <h3>Porta 666</h3>
+      <p>A porta TCP/IP usada pelo DOOM foi <strong>oficialmente registrada</strong> na IANA — um feito histórico.</p>
+    </div>
+    <div class="card fragment">
+      <h3>DEATHMATCH</h3>
+      <p>O DOOM popularizou o termo <strong>deathmatch</strong> — jogadores se eliminando em rede local.</p>
+    </div>
+    <div class="card fragment">
+      <h3>Banido em Empresas</h3>
+      <p>Redes corporativas do mundo todo <strong>bloquearam o jogo</strong> por deixar funcionários improdutivos.</p>
+    </div>
+    <div class="card fragment">
+      <h3>Cooperativo</h3>
+      <p>Modo co-op para até <strong>4 jogadores</strong> — inédito e revolucionário para jogos de PC em 1993.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     10 — TIMELINE
+════════════════════════════════════════════════════ -->
+<section data-background-color="#0d0000" data-transition="convex">
+  <h2>Linha do Tempo</h2>
+
+  <div class="g2" style="margin-top:6px;">
+    <ul class="tl">
+      <li class="fragment"><strong>1991</strong><span>Fundação da id Software. Wolfenstein 3D.</span></li>
+      <li class="fragment"><strong>Fev 1992</strong><span>Desenvolvimento do DOOM iniciado. Carmack começa o motor.</span></li>
+      <li class="fragment"><strong>Dez 1993</strong><span>Shareware lançado gratuitamente. Download explode nos servidores.</span></li>
+      <li class="fragment"><strong>1994</strong><span>DOOM II — mais inimigos, armas e o Super Shotgun.</span></li>
+    </ul>
+    <ul class="tl">
+      <li class="fragment"><strong>1997</strong><span>Código-fonte liberado sob GPL. Comunidade explode.</span></li>
+      <li class="fragment"><strong>2004</strong><span>DOOM 3 — reboot de terror com gráficos 3D reais.</span></li>
+      <li class="fragment"><strong>2016</strong><span>DOOM reboot — novo sucesso de crítica e público.</span></li>
+      <li class="fragment"><strong>Hoje</strong><span>Comunidade ativa. Patrimônio cultural dos games.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     11 — CURIOSIDADES
+════════════════════════════════════════════════════ -->
+<section data-background-color="#0d0000" data-transition="convex">
+  <h2>Curiosidades</h2>
+  <p class="sub">Fatos que você provavelmente não sabia sobre o DOOM</p>
+
+  <div class="g2" style="margin-top:8px;">
+    <div class="card fragment">
+      <h3>📦 Tamanho minúsculo</h3>
+      <p>O DOOM shareware pesava apenas <strong>~2,39 MB</strong> — e mudou a indústria para sempre.</p>
+    </div>
+    <div class="card fragment">
+      <h3>💿 Distribuição viral</h3>
+      <p>Mais de <strong>10 milhões de cópias</strong> instaladas no primeiro ano via download FTP gratuito.</p>
+    </div>
+    <div class="card fragment">
+      <h3>🔓 Open Source</h3>
+      <p>Em 1997, John Carmack liberou o código-fonte sob <strong>GPL</strong> — dando vida a centenas de ports.</p>
+    </div>
+    <div class="card fragment">
+      <h3>📡 Porta 666</h3>
+      <p>A porta usada no multiplayer foi <strong>registrada oficialmente na IANA</strong> — única para um jogo.</p>
+    </div>
+    <div class="card fragment">
+      <h3>🎮 Deathmatch</h3>
+      <p>DOOM popularizou o termo <strong>deathmatch</strong> e o conceito de LAN party no mundo todo.</p>
+    </div>
+    <div class="card fragment">
+      <h3>🖥️ Benchmark cultural</h3>
+      <p><em>"Can it run DOOM?"</em> virou o <strong>teste definitivo</strong> de capacidade de qualquer hardware.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     12 — CAN IT RUN DOOM?
+════════════════════════════════════════════════════ -->
+<section data-background-color="#0d0000" data-transition="fade">
+  <h2>Can It Run DOOM?</h2>
+  <p class="sub">O meme que virou patrimônio da cultura geek</p>
+
+  <div class="g2" style="margin-bottom:10px;">
+    <div>
+      <p style="font-size:.58em;color:var(--orange);margin:0 0 4px;font-family:'Orbitron',sans-serif;">▶ DOOM em Caixa Eletrônico</p>
+      <iframe data-src="https://www.youtube.com/embed/PW5ELKTivbE?rel=0&modestbranding=1"
+        width="100%" height="180" frameborder="0" allowfullscreen
+        style="border:2px solid #3a0000;border-radius:3px;display:block;"></iframe>
+      <p class="note">Aussie50 — ATM rodando DOOM via DosBox</p>
+    </div>
+    <div>
+      <p style="font-size:.58em;color:var(--orange);margin:0 0 4px;font-family:'Orbitron',sans-serif;">▶ DOOM em Impressora Canon</p>
+      <iframe data-src="https://www.youtube.com/embed/NPWi5yJK3zo?rel=0&modestbranding=1"
+        width="100%" height="180" frameborder="0" allowfullscreen
+        style="border:2px solid #3a0000;border-radius:3px;display:block;"></iframe>
+      <p class="note">Context InfoSec — firmware modificado Canon Pixma</p>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b>🤰</b><s>Teste de Gravidez</s></div>
+    <div class="stat"><b>🧮</b><s>Calculadora TI</s></div>
+    <div class="stat"><b>🧊</b><s>Geladeira Smart</s></div>
+    <div class="stat"><b>📄</b><s>Arquivo PDF</s></div>
+    <div class="stat"><b>🚗</b><s>Porsche 911</s></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     12 — LEGADO
+════════════════════════════════════════════════════ -->
+<section data-background-color="#0d0000" data-transition="fade">
+  <h2>O Legado</h2>
+  <p class="sub">O que uma equipe pequena e criativa pode fazer</p>
+
+  <div class="g3" style="margin-bottom:10px;">
+    <div class="card fragment">
+      <h3>Gênero FPS</h3>
+      <p>Definiu as mecânicas fundamentais do gênero que domina os games até hoje.</p>
+    </div>
+    <div class="card fragment">
+      <h3>Cultura do Modding</h3>
+      <p>O formato WAD foi o embrião da cultura de mods que molda a indústria.</p>
+    </div>
+    <div class="card fragment">
+      <h3>Open Source</h3>
+      <p>Código liberado em 1997. Ports em geladeira, ATM, calculadora — tudo roda DOOM.</p>
+    </div>
+  </div>
+
+  <div class="hbox fragment" style="margin-bottom:8px;text-align:center;">
+    <p style="margin:0;font-size:.72em;"><strong>"Can it run DOOM?"</strong> — patrimônio cultural da computação</p>
+  </div>
+
+  <div class="fragment">
+    <span class="tag">FPS</span><span class="tag">Open Source</span>
+    <span class="tag">Modding</span><span class="tag">Multiplayer</span>
+    <span class="tag">Cultura Geek</span><span class="tag">Patrimônio Cultural</span>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     13 — CONCLUSÃO
+════════════════════════════════════════════════════ -->
+<section data-background-color="#100000" data-transition="zoom">
+  <p class="note" style="font-size:.55em;color:#444;letter-spacing:4px;margin-bottom:0;">Lição final</p>
+  <h1 class="doom-title" style="font-size:2.6em!important;">RIP &amp; TEAR</h1>
+  <div class="divider"></div>
+  <div class="quote" style="max-width:680px;margin:12px auto;">
+    Com uma equipe pequena, ferramentas criativas e muita determinação,
+    a id Software não apenas criou um jogo —
+    criou um <strong>marco da civilização digital</strong>.
+  </div>
+
+  <div class="stats" style="margin-top:14px;">
+    <div class="stat"><b>30+</b><s>Anos de relevância</s></div>
+    <div class="stat"><b>∞</b><s>Ports existentes</s></div>
+    <div class="stat"><b>1993</b><s>Para sempre</s></div>
+  </div>
+
+  <p class="note" style="margin-top:16px;">Feito com Reveal.js</p>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    transition: 'fade',
+    backgroundTransition: 'fade',
+    controls: true,
+    progress: true,
+    slideNumber: 'c/t',
+    center: true,
+    width: 960,
+    height: 540,
+    margin: 0.06,
+    minScale: 0.2,
+    maxScale: 1.5,
+    plugins: [],
+  });
+
+  Reveal.on('ready', () => {
+    const bar = document.querySelector('.progress span');
+    if (bar) bar.style.background = '#e74c3c';
+  });
+</script>
+</body>
+</html>
