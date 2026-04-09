@@ -124,6 +124,32 @@
     .sub  { font-size: 1.0em !important; color: var(--dim) !important; margin-bottom: 12px !important; }
     .note { font-size: 0.82em !important; color: #555 !important; margin-top: 6px !important; }
 
+    /* ── Image placeholder ─────────────────────────── */
+    .img-ph {
+      background: #110000;
+      border: 2px dashed #3a0000;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #444;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.78em;
+      letter-spacing: 2px;
+      text-align: center;
+      padding: 12px;
+      min-height: 140px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .img-ph span { color: #e03030; font-size: 1.6em; display: block; margin-bottom: 6px; }
+    img.slide-img {
+      width: 100%; height: 180px; object-fit: cover;
+      border-radius: 6px; border: 2px solid #3a0000;
+      box-shadow: 0 0 20px rgba(224,48,48,.25);
+      display: block;
+    }
+
     /* ── Quem sou eu ───────────────────────────────── */
     .intro-wrap {
       display: grid;
@@ -162,6 +188,19 @@
     .o { color: var(--orange); }
     .y { color: var(--yellow); }
     .d { color: var(--dim);    }
+
+    /* ── Correção as Imagens Cortadas ──────────────── */
+    section img {
+      object-fit: contain !important;
+      background-color: #0d0000 !important;
+      padding: 4px; /* Opcional: cria um respiro interno */
+      box-sizing: border-box;
+    }
+    .intro-photo {
+      object-fit: cover !important; /* Mantém a capa de introdução usando cover */
+      background-color: transparent !important;
+      padding: 0;
+    }
   </style>
 </head>
 <body>
@@ -171,13 +210,26 @@
 <!-- ════════════════════════════════════════════════════
      1 — TÍTULO
 ════════════════════════════════════════════════════ -->
-<section data-background-color="#100000" data-transition="zoom">
-  <p class="note" style="font-size:.55em;color:#444;letter-spacing:4px;margin-bottom:0;">id Software apresenta</p>
-  <h1 class="doom-title">DOOM</h1>
-  <p style="font-size:.7em;color:#888;letter-spacing:3px;margin:4px 0 10px;">A HISTÓRIA DO JOGO QUE DEFINIU UM GÊNERO</p>
-  <div class="divider"></div>
-  <p style="font-size:.65em;color:#aaa;margin:8px 0 14px;">Como uma pequena equipe criou o FPS mais icônico de todos os tempos</p>
-  <span class="badge">1993</span>
+<section data-background-gradient="radial-gradient(circle at center, #2e0505 0%, #050000 80%)" data-transition="zoom">
+  <div style="display:grid;grid-template-columns:1fr 260px;gap:40px;align-items:center;width:100%;">
+    <div style="text-align:center;">
+      <p class="note" style="font-size:.65em;color:#aa5555;letter-spacing:6px;margin-bottom:0;text-transform:uppercase;">id Software apresenta</p>
+      <h1 class="doom-title" style="margin: 5px 0;">DOOM</h1>
+      <p style="font-size:.70em;color:#dcdcdc;letter-spacing:3px;margin:10px 0;">A HISTÓRIA DO JOGO QUE DEFINIU UM GÊNERO</p>
+      <div class="divider" style="opacity: 0.7; width: 80%; margin: 14px auto;"></div>
+      <p style="font-size:.68em;color:#aaaaaa;margin:12px 0 20px;">Como uma pequena equipe criou o FPS mais icônico de todos os tempos</p>
+      <span class="badge" style="transform: skew(-12deg); border: 1px solid #ffa0a0; box-shadow: 0 0 25px rgba(224,48,48,0.8); padding: 6px 24px; font-size: 0.85em;">1993</span>
+    </div>
+    <div style="perspective: 1000px;">
+      <img src="doom capa.jpg" alt="DOOM — capa original"
+        style="width:100%;border-radius:6px;border:3px solid #5a0000;
+               box-shadow:-15px 15px 45px rgba(224,48,48,.6);
+               transform: rotateY(-18deg) rotateX(4deg) translateZ(10px);
+               transition: all 0.4s ease-out; display:block; cursor: pointer;"
+        onmouseover="this.style.transform='rotateY(0deg) rotateX(0deg) translateZ(40px)'; this.style.boxShadow='0px 20px 60px rgba(224,48,48,0.9)';"
+        onmouseout="this.style.transform='rotateY(-18deg) rotateX(4deg) translateZ(10px)'; this.style.boxShadow='-15px 15px 45px rgba(224,48,48,.6)';">
+    </div>
+  </div>
 </section>
 
 <!-- ════════════════════════════════════════════════════
@@ -185,17 +237,17 @@
 ════════════════════════════════════════════════════ -->
 <section data-background-color="#0d0000" data-transition="fade">
   <div class="intro-wrap">
-    <img class="intro-photo" src="Imagem do WhatsApp de 2024-09-15 à(s) 13.58.15_b755e9a2.jpg" alt="Ranyer Lopes">
+    <img class="intro-photo" src="ranyer.jpg" alt="Ranyer Lopes">
     <div class="intro-info">
       <p style="font-size:.6em;color:#444;letter-spacing:4px;margin-bottom:4px;">APRESENTAÇÃO</p>
       <h1>Ranyer Lopes</h1>
-      <p class="role">Desenvolvedor Front-End</p>
+      <p class="role">Desenvolvedor Full Stack</p>
       <div class="divider" style="margin-bottom:14px;"></div>
       <ul>
-        <li class="fragment">🎮 Ex-NPC, gamer nas horas vagas</li>
-        <li class="fragment">🎵 Músico</li>
-        <li class="fragment">✏️ Desenhista nas horas vagas</li>
-        <li class="fragment">💻 Mais conhecido como aquele que tem vários nomes</li>
+        <li class="fragment">Ex-NPC, gamer nas horas vagas</li>
+        <li class="fragment">Entusiasta em IA</li>
+        <li class="fragment">Músico e desenhista quando dá</li>
+        <li class="fragment">Mais conhecido como aquele que tem vários nomes</li>
       </ul>
     </div>
   </div>
@@ -226,52 +278,66 @@
 </section>
 
 <!-- ════════════════════════════════════════════════════
-     3 — id SOFTWARE
+     4 — id SOFTWARE
 ════════════════════════════════════════════════════ -->
 <section data-background-color="#0d0000" data-transition="slide">
   <h2>id Software</h2>
   <p class="sub">A equipe pequena com ideias gigantes</p>
 
-  <div class="g3">
-    <div class="pcard">
-      <span class="icon">💻</span>
-      <h3>John Carmack</h3>
-      <p>Arquiteto do motor gráfico revolucionário</p>
+  <div class="g2" style="align-items:center;margin-bottom:10px;">
+    <div>
+      <img src="desenvolvedores doom.jpg" alt="Equipe id Software"
+        style="width:100%;max-height:200px;object-fit:cover;object-position:top;
+               border-radius:6px;border:2px solid #3a0000;
+               box-shadow:0 0 24px rgba(224,48,48,.3);display:block;">
+      <p class="note" style="text-align:center;margin-top:4px;">A equipe da id Software</p>
     </div>
-    <div class="pcard">
-      <span class="icon">🎮</span>
-      <h3>John Romero</h3>
-      <p>Designer de levels — alma criativa do gameplay</p>
-    </div>
-    <div class="pcard">
-      <span class="icon">🎨</span>
-      <h3>Adrian Carmack</h3>
-      <p>Artista — criou sprites, texturas e o visual sombrio</p>
+    <div>
+      <div class="g3" style="margin-bottom:8px;">
+        <div class="pcard">
+          <span class="icon">💻</span>
+          <h3>John Carmack</h3>
+          <p>Motor gráfico revolucionário</p>
+        </div>
+        <div class="pcard">
+          <span class="icon">🎮</span>
+          <h3>John Romero</h3>
+          <p>Level design — alma do gameplay</p>
+        </div>
+        <div class="pcard">
+          <span class="icon">🎨</span>
+          <h3>Adrian Carmack</h3>
+          <p>Arte, sprites e o visual sombrio</p>
+        </div>
+      </div>
+      <ul>
+        <li class="fragment">Fundada em <strong>1991</strong> em Shreveport, Louisiana</li>
+        <li class="fragment">Antes do DOOM: <strong>Commander Keen</strong> e <strong>Wolfenstein 3D</strong></li>
+        <li class="fragment">Filosofia: <strong>tecnologia + criatividade</strong> acima de tudo</li>
+      </ul>
     </div>
   </div>
-
-  <div class="divider" style="margin:10px 0;"></div>
-
-  <ul>
-    <li class="fragment">Fundada em <strong>1991</strong> em Shreveport, Louisiana</li>
-    <li class="fragment">Antes do DOOM: <strong>Commander Keen</strong> e <strong>Wolfenstein 3D</strong></li>
-    <li class="fragment">Filosofia: <strong>tecnologia + criatividade</strong> acima de tudo</li>
-  </ul>
 </section>
 
 <!-- ════════════════════════════════════════════════════
-     4 — JOHN CARMACK
+     5 — JOHN CARMACK
 ════════════════════════════════════════════════════ -->
 <section data-background-color="#0d0000" data-transition="convex">
   <h2>John Carmack</h2>
   <p class="sub">O programador que desafiou os limites do hardware</p>
 
-  <div class="quote" style="margin-bottom:12px;">
-    Velocidade acima de tudo. O jogo precisa rodar rápido mesmo nas máquinas mais modestas.
-    <em>— Filosofia de Carmack</em>
-  </div>
-
-  <div class="g2">
+  <div class="g2" style="align-items:start;">
+    <div>
+      <!-- Foto atualizada do Carmack -->
+      <img src="john carmack.webp" alt="John Carmack"
+        style="width:100%;height:230px;object-fit:contain;background-color:#110000;
+               border-radius:6px;border:2px solid #3a0000;
+               box-shadow:0 0 24px rgba(224,48,48,.35);display:block;">
+      <div class="quote fragment" style="margin-top:12px;font-size:.82em;">
+        "Velocidade acima de tudo. O jogo precisa rodar rápido mesmo nas máquinas modestas."
+        <em>— Filosofia de Carmack</em>
+      </div>
+    </div>
     <div>
       <h3 style="margin-bottom:6px;">Prioridades</h3>
       <ul>
@@ -280,21 +346,87 @@
         <li class="fragment">Motor customizado do zero</li>
         <li class="fragment">Ilusão de 3D, não 3D real</li>
       </ul>
-    </div>
-    <div>
-      <h3 style="margin-bottom:6px;">Conquistas técnicas</h3>
+      <h3 style="margin-top:14px;margin-bottom:6px;">Conquistas técnicas</h3>
       <ul>
         <li class="fragment">Binary Space Partition (BSP)</li>
         <li class="fragment">Raycasting otimizado</li>
         <li class="fragment">Texture mapping em tempo real</li>
-        <li class="fragment">Renderização pseudo-3D eficiente</li>
       </ul>
     </div>
   </div>
 </section>
 
 <!-- ════════════════════════════════════════════════════
-     5 — FERRAMENTAS
+     6 — JOHN ROMERO
+════════════════════════════════════════════════════ -->
+<section data-background-color="#0d0000" data-transition="convex">
+  <h2>John Romero</h2>
+  <p class="sub">O arquiteto das experiências — game design como arte</p>
+
+  <div class="g2" style="align-items:start;">
+    <div>
+      <img src="John-Romero-criador-de-Doom.jpg.webp" alt="John Romero"
+        style="width:100%;max-height:210px;object-fit:cover;object-position:top;
+               border-radius:6px;border:2px solid #3a0000;
+               box-shadow:0 0 24px rgba(224,48,48,.35);display:block;">
+      <div class="quote fragment" style="margin-top:8px;font-size:.82em;">
+        "Faça o jogo ser divertido primeiro. Todo o resto é secundário."
+        <em>— John Romero</em>
+      </div>
+    </div>
+    <div>
+      <ul>
+        <li class="fragment"><strong>Level design</strong> — criou as fases mais icônicas do DOOM do zero</li>
+        <li class="fragment">Definiu o ritmo frenético — <strong>gameplay loop</strong> que ainda é referência</li>
+        <li class="fragment">Co-criador do termo e modo <strong>DEATHMATCH</strong></li>
+        <li class="fragment">Após id Software: fundou <strong>Ion Storm</strong> (Daikatana)</li>
+        <li class="fragment">2019: lançou <strong>SIGIL</strong> — expansão gratuita oficial para o DOOM original</li>
+        <li class="fragment">Hoje: ativo na cena indie, palestra em eventos pelo mundo</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     7 — TOM HALL & DOOM BIBLE
+════════════════════════════════════════════════════ -->
+<section data-background-color="#0d0000" data-transition="fade">
+  <h2>A Doom Bible</h2>
+  <p class="sub">O plano que nunca foi — e por que isso foi ótimo</p>
+
+  <div class="g2" style="align-items:start;margin-bottom:10px;">
+    <div>
+      <div class="card fragment">
+        <h3>📖 O que era?</h3>
+        <p>Tom Hall, co-fundador da id, escreveu um documento de <strong>48 páginas</strong> com história, personagens, narrativa e universo completo para o DOOM.</p>
+      </div>
+      <div class="card fragment" style="margin-top:8px;">
+        <h3>❌ O que aconteceu?</h3>
+        <p>Carmack e Romero rejeitaram a proposta. Tom Hall foi <strong>demitido em agosto de 1993</strong>, meses antes do lançamento.</p>
+      </div>
+      <div class="hbox fragment" style="margin-top:8px;">
+        <p style="margin:0;font-size:.72em;">
+          O conflito entre <strong>visão narrativa</strong> e <strong>puro gameplay</strong>
+          definiu o que o DOOM se tornaria — e ensinou que às vezes
+          <strong>o que você corta</strong> importa tanto quanto o que você mantém.
+        </p>
+      </div>
+      <div class="quote fragment" style="margin-top:14px;font-size:.86em;">
+        "História em um jogo é como história em filme pornô. Espera-se que esteja lá, mas não é tão importante."
+        <em>— John Carmack</em>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: center;">
+      <img class="fragment" src="doombilble.jpg" alt="Doom Bible — documento original"
+        style="width:auto;height:360px;margin:0;
+               border-radius:6px;border:2px solid #3a0000;
+               box-shadow:0 0 20px rgba(224,48,48,.3);">
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     8 — FERRAMENTAS
 ════════════════════════════════════════════════════ -->
 <section data-background-color="#0d0000" data-transition="fade">
   <h2>As Ferramentas</h2>
@@ -321,44 +453,55 @@
 </section>
 
 <!-- ════════════════════════════════════════════════════
-     6 — MOTOR GRÁFICO
+     9 — MOTOR GRÁFICO
 ════════════════════════════════════════════════════ -->
 <section data-background-color="#0d0000" data-transition="slide">
   <h2>O Motor Gráfico</h2>
-  <p class="sub">Pseudo-3D — a ilusão que enganou uma geração</p>
+  <p class="sub">Pseudo-3D — o trade-off de engenharia mais genial de 1993</p>
 
-  <div class="hbox" style="margin-bottom:10px;">
-    <p style="margin:0;font-size:.68em;text-align:center;">
-      O DOOM <strong>NÃO é 3D de verdade</strong> — é um mapa 2D renderizado com alturas simuladas.<br>
-      <span class="d">Mas ninguém percebeu. E esse era exatamente o plano.</span>
-    </p>
-  </div>
-
-  <div class="g2">
+  <div class="g2" style="align-items:start;margin-bottom:8px;">
     <div>
-      <h3 style="margin-bottom:6px;">Técnicas utilizadas</h3>
+      <div class="hbox fragment" style="margin-bottom:8px;">
+        <p style="margin:0;font-size:.68em;">
+          3D real em 1993 exigia <strong>hardware especializado de milhares de dólares</strong>.
+          Um 486 tinha ~50 MIPS — insuficiente pra renderizar uma cena 3D a tempo real.
+        </p>
+      </div>
+      <div class="hbox fragment" style="margin-bottom:8px;border-color:rgba(243,156,18,.4);background:rgba(243,156,18,.08);">
+        <p style="margin:0;font-size:.68em;">
+          <span class="y">A sacada de Carmack:</span> o cérebro humano <strong>não precisa de 3D real</strong>
+          para acreditar que está em 3D. Basta a perspectiva ser convincente.
+        </p>
+      </div>
       <ul>
-        <li class="fragment"><strong>BSP Tree</strong> — divisão binária do espaço</li>
-        <li class="fragment"><strong>Setores</strong> — regiões com altura e textura próprias</li>
-        <li class="fragment"><strong>Texture mapping</strong> — texturas em perspectiva</li>
+        <li class="fragment"><strong>BSP Tree</strong> — resolve a ordem de renderização em O(n)</li>
+        <li class="fragment"><strong>Setores</strong> — regiões 2D com altura e textura próprias</li>
+        <li class="fragment"><strong>Texture mapping</strong> — texturas em perspectiva nas paredes</li>
       </ul>
     </div>
-    <div class="code fragment">
-      <span class="c">// Conceito BSP simplificado</span><br>
-      <span class="k">void</span> <span class="f">renderBSP</span>(node) {<br>
-      &nbsp;&nbsp;<span class="k">if</span> (isLeaf(node)) {<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="f">drawSector</span>(node);<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="k">return</span>;<br>
-      &nbsp;&nbsp;}<br>
-      &nbsp;&nbsp;<span class="f">renderBSP</span>(front);<br>
-      &nbsp;&nbsp;<span class="f">renderBSP</span>(back);<br>
-      }
+    <div>
+      <div class="fragment">
+        <p style="font-size:.65em;color:#555;margin:0 0 4px;"><span class="o">// problema sem BSP:</span> checar cada parede contra cada outra — O(n²)</p>
+        <p style="font-size:.65em;color:#555;margin:0 0 6px;"><span class="o">// com BSP:</span> percorrer uma árvore pré-calculada — O(n)</p>
+        <div class="code" style="margin-top:10px;">
+          <span class="c">// BSP: renderiza da frente para o fundo</span><br>
+          <span class="k">void</span> <span class="f">renderBSP</span>(node) {<br>
+          &nbsp;&nbsp;<span class="k">if</span> (isLeaf(node)) {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="f">drawSector</span>(node); <span class="c">// desenha setor visível</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="k">return</span>;<br>
+          &nbsp;&nbsp;}<br>
+          &nbsp;&nbsp;<span class="f">renderBSP</span>(front); <span class="c">// frente primeiro</span><br>
+          &nbsp;&nbsp;<span class="f">renderBSP</span>(back);&nbsp; <span class="c">// fundo depois</span><br>
+          }
+        </div>
+      </div>
+      <p class="note fragment">A árvore BSP é gerada <strong>uma vez</strong> ao compilar o mapa — não a cada frame.</p>
     </div>
   </div>
 </section>
 
 <!-- ════════════════════════════════════════════════════
-     7 — RAYCASTING
+     10 — RAYCASTING
 ════════════════════════════════════════════════════ -->
 <section data-background-color="#0d0000" data-transition="slide">
   <h2>Raycasting</h2>
@@ -366,17 +509,22 @@
 
   <div class="g2" style="align-items:start;margin-top:6px;">
     <div>
-      <h3 style="margin-bottom:8px;">Como funciona?</h3>
+      <div class="hbox fragment" style="margin-bottom:8px;">
+        <p style="margin:0;font-size:.68em;">
+          <span class="y">O problema:</span> como renderizar uma cena em perspectiva sem uma GPU?<br>
+          <span class="d">Resposta: um raio por coluna de pixel — simples, previsível, rápido.</span>
+        </p>
+      </div>
+      <h3 class="fragment" style="margin-bottom:6px;">Como funciona?</h3>
       <ul>
-        <li class="fragment">Para cada coluna de pixels na tela, um <strong>raio</strong> é lançado</li>
-        <li class="fragment">O raio calcula a distância até a parede mais próxima</li>
-        <li class="fragment">Paredes mais longe → fatia de pixels <strong>menor</strong></li>
-        <li class="fragment">Paredes mais perto → fatia de pixels <strong>maior</strong></li>
-        <li class="fragment">Resultado: ilusão de <strong>perspectiva 3D</strong> com custo mínimo de CPU</li>
+        <li class="fragment">Para cada coluna de pixels, um <strong>raio</strong> é lançado do jogador</li>
+        <li class="fragment">O raio mede a distância até a parede mais próxima</li>
+        <li class="fragment">Longe → fatia <strong>menor</strong> &nbsp;|&nbsp; Perto → fatia <strong>maior</strong></li>
+        <li class="fragment">Resultado: perspectiva 3D convincente com <strong>custo linear de CPU</strong></li>
       </ul>
     </div>
     <div>
-      <h3 style="margin-bottom:8px;">Por que era revolucionário?</h3>
+      <h3 class="fragment" style="margin-bottom:8px;">Por que era revolucionário?</h3>
       <div class="card fragment">
         <h3>Hardware de 1993</h3>
         <p>386/486 sem GPU dedicada. Raycasting gerava pseudo-3D a 35 fps em tempo real.</p>
@@ -396,33 +544,71 @@
 </section>
 
 <!-- ════════════════════════════════════════════════════
-     8 — OS INIMIGOS
+     11 — OS INIMIGOS
 ════════════════════════════════════════════════════ -->
 <section data-background-color="#0d0000" data-transition="convex">
   <h2>Os Inimigos</h2>
   <p class="sub">A técnica inusitada que deu vida aos demônios</p>
 
-  <div class="quote fragment" style="margin-bottom:10px;">
-    Os inimigos não eram modelos 3D. Eram <strong>fotografias</strong> de esculturas de gesso
-    digitalizadas em diferentes ângulos.
-    <em>— Adrian Carmack</em>
+  <div class="g2" style="align-items:start;gap:14px;">
+    <div>
+      <div class="quote fragment" style="margin-bottom:10px;font-size:.9em;">
+        Os inimigos não eram modelos 3D. Eram <strong>fotografias</strong> de esculturas de gesso
+        digitalizadas em diferentes ângulos.
+        <em>— Adrian Carmack</em>
+      </div>
+      <div class="stats fragment" style="margin-bottom:10px;">
+        <div class="stat"><b>8</b><s>Ângulos</s></div>
+        <div class="stat"><b>Gesso</b><s>Material</s></div>
+        <div class="stat"><b>Sprite</b><s>Técnica</s></div>
+      </div>
+      <ul>
+        <li class="fragment">Sprites 2D voltados ao jogador — <strong>billboarding</strong></li>
+        <li class="fragment">Cada frame = uma foto digitalizada do modelo físico</li>
+        <li class="fragment">Visual único e visceral que marcou toda uma geração</li>
+      </ul>
+    </div>
+    <div class="fragment">
+      <img src="classic-doomguy-work-in-progress-100-handmade-v0-ODFxMW54eXh0M2xnMQRz6MBPgQoCbJEF-44eaARuIEQ79FSaUtVBzMHYB2CG.webp"
+        alt="Doomguy artesanal"
+        style="width:100%;height:auto;max-height:360px;border-radius:4px;border:2px solid #5a0000;box-shadow:0 0 16px rgba(224,48,48,.25);background:transparent !important;padding:0;">
+      <p class="note" style="text-align:center;margin-top:10px;">Modelos físicos originais usados como sprites (Escultura em argila)</p>
+    </div>
   </div>
-
-  <div class="stats fragment" style="margin-bottom:10px;">
-    <div class="stat"><b>8</b><s>Ângulos por inimigo</s></div>
-    <div class="stat"><b>Gesso</b><s>Material dos modelos</s></div>
-    <div class="stat"><b>Sprite</b><s>Técnica de renderização</s></div>
-  </div>
-
-  <ul>
-    <li class="fragment">Sprites 2D sempre voltados ao jogador — <strong>billboarding</strong></li>
-    <li class="fragment">Cada frame de animação = uma foto digitalizada do modelo físico</li>
-    <li class="fragment">Resultado: visual único e visceral que marcou toda uma geração</li>
-  </ul>
 </section>
 
 <!-- ════════════════════════════════════════════════════
-     8 — FORMATO WAD
+     11.5 — GALERIA MODELOS
+════════════════════════════════════════════════════ -->
+<section data-background-color="#0d0000" data-transition="slide">
+  <h2>Galeria: Arte Analógica</h2>
+  <p class="sub">Registros raros das esculturas originais antes da digitalização</p>
+
+  <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:14px;margin-top:30px;">
+    <!-- Linha 1 -->
+    <img src="a-showcase-of-various-physical-models-used-to-make-dooms-v0-3lq3gd7i558c1.webp" alt="Modelo 1" class="fragment"
+      style="width:100%;aspect-ratio:1/1;object-fit:cover !important;border:1px solid #5a0000;border-radius:6px;box-shadow:0 0 10px rgba(224,48,48,.2);padding:0;margin:0;">
+    <img src="a-showcase-of-various-physical-models-used-to-make-dooms-v0-7tled388558c1.webp" alt="Modelo 2" class="fragment"
+      style="width:100%;aspect-ratio:1/1;object-fit:cover !important;border:1px solid #5a0000;border-radius:6px;box-shadow:0 0 10px rgba(224,48,48,.2);padding:0;margin:0;">
+    <img src="a-showcase-of-various-physical-models-used-to-make-dooms-v0-8y3bkfaf558c1.webp" alt="Modelo 3" class="fragment"
+      style="width:100%;aspect-ratio:1/1;object-fit:cover !important;border:1px solid #5a0000;border-radius:6px;box-shadow:0 0 10px rgba(224,48,48,.2);padding:0;margin:0;">
+    <img src="a-showcase-of-various-physical-models-used-to-make-dooms-v0-94znz3xc558c1.webp" alt="Modelo 4" class="fragment"
+      style="width:100%;aspect-ratio:1/1;object-fit:cover !important;border:1px solid #5a0000;border-radius:6px;box-shadow:0 0 10px rgba(224,48,48,.2);padding:0;margin:0;">
+    
+    <!-- Linha 2 -->
+    <img src="a-showcase-of-various-physical-models-used-to-make-dooms-v0-fxyfpe55558c1.webp" alt="Modelo 5" class="fragment"
+      style="width:100%;aspect-ratio:1/1;object-fit:cover !important;border:1px solid #5a0000;border-radius:6px;box-shadow:0 0 10px rgba(224,48,48,.2);padding:0;margin:0;">
+    <img src="a-showcase-of-various-physical-models-used-to-make-dooms-v0-h6lfdnfa558c1.webp" alt="Modelo 6" class="fragment"
+      style="width:100%;aspect-ratio:1/1;object-fit:cover !important;border:1px solid #5a0000;border-radius:6px;box-shadow:0 0 10px rgba(224,48,48,.2);padding:0;margin:0;">
+    <img src="a-showcase-of-various-physical-models-used-to-make-dooms-v0-tsh5tm8g558c1.webp" alt="Modelo 7" class="fragment"
+      style="width:100%;aspect-ratio:1/1;object-fit:cover !important;border:1px solid #5a0000;border-radius:6px;box-shadow:0 0 10px rgba(224,48,48,.2);padding:0;margin:0;">
+    <img src="a-showcase-of-various-physical-models-used-to-make-dooms-v0-z4wbw8vd558c1.webp" alt="Modelo 8" class="fragment"
+      style="width:100%;aspect-ratio:1/1;object-fit:cover !important;border:1px solid #5a0000;border-radius:6px;box-shadow:0 0 10px rgba(224,48,48,.2);padding:0;margin:0;">
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     12 — FORMATO WAD
 ════════════════════════════════════════════════════ -->
 <section data-background-color="#0d0000" data-transition="fade">
   <h2>O Formato WAD</h2>
@@ -456,7 +642,39 @@
 </section>
 
 <!-- ════════════════════════════════════════════════════
-     9 — MULTIPLAYER
+     13 — SHAREWARE
+════════════════════════════════════════════════════ -->
+<section data-background-color="#0d0000" data-transition="slide">
+  <h2>O Modelo Shareware</h2>
+  <p class="sub">A distribuição que revolucionou o software antes da internet</p>
+
+  <div class="g2" style="align-items:start;margin-bottom:10px;">
+    <div>
+      <img src="Arte shareware FTP download.webp" alt="Arte shareware DOOM"
+        style="width:100%;max-height:200px;object-fit:cover;
+               border-radius:6px;border:2px solid #3a0000;
+               box-shadow:0 0 20px rgba(224,48,48,.3);display:block;">
+    </div>
+    <div>
+      <ul>
+        <li class="fragment"><strong>Episódio 1 gratuito</strong> — jogue, se gostar, compre os outros</li>
+        <li class="fragment">Download via <strong>FTP anônimo</strong> — antes das lojas digitais existirem</li>
+        <li class="fragment">Servidores da Univ. de Wisconsin <strong>colapsaram</strong> no lançamento</li>
+        <li class="fragment">Nascimento do modelo <strong>"free-to-play + premium"</strong></li>
+        <li class="fragment">Antecessor direto de <strong>Steam, Epic Games Store</strong> e todos os launchers hoje</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="stats fragment">
+    <div class="stat"><b>~2.4MB</b><s>Tamanho do download</s></div>
+    <div class="stat"><b>$0</b><s>Custo inicial</s></div>
+    <div class="stat"><b>10M+</b><s>Cópias no 1º ano</s></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     14 — MULTIPLAYER
 ════════════════════════════════════════════════════ -->
 <section data-background-color="#0d0000" data-transition="slide">
   <h2>Multiplayer</h2>
@@ -483,7 +701,112 @@
 </section>
 
 <!-- ════════════════════════════════════════════════════
-     10 — TIMELINE
+     15 — PORTS / OPEN SOURCE COMMUNITY
+════════════════════════════════════════════════════ -->
+<section data-background-color="#0d0000" data-transition="fade">
+  <h2>O Código que Nunca Morreu</h2>
+  <p class="sub">1997: Carmack abre o código — a comunidade faz o resto</p>
+
+  <div class="g2" style="align-items:start;margin-bottom:10px;">
+    <div>
+      <h3 style="margin-bottom:8px;">Ports criados pela comunidade</h3>
+      <ul>
+        <li class="fragment"><strong>Chocolate Doom</strong> — fidelidade total ao original</li>
+        <li class="fragment"><strong>Crispy Doom</strong> — melhorias mínimas, mantendo a alma</li>
+        <li class="fragment"><strong>PrBoom+</strong> — compatibilidade e demo recording</li>
+        <li class="fragment"><strong>GZDoom</strong> — OpenGL, scripting ZScript, mods modernos</li>
+        <li class="fragment"><strong>EDGE, Odamex, Zandronum</strong> — multiplayer online</li>
+      </ul>
+    </div>
+    <div>
+      <div class="card fragment">
+        <h3>O que programadores construíram</h3>
+        <p>Novos renderers em <strong>OpenGL e Vulkan</strong>, linguagem de scripting (ZScript/ACS), suporte a modelos 3D, física customizada — tudo em cima de um código de 1993.</p>
+      </div>
+      <div class="hbox fragment" style="margin-top:8px;">
+        <p style="margin:0;font-size:.72em;">
+          GZDoom ainda recebe <strong>atualizações regulares em 2026</strong>.<br>
+          <span class="d">Boa arquitetura não envelhece — ela evolui.</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats fragment">
+    <div class="stat"><b>30+</b><s>Ports ativos</s></div>
+    <div class="stat"><b>GPL</b><s>Licença open source</s></div>
+    <div class="stat"><b>2026</b><s>Ainda sendo atualizado</s></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     16 — id TECH LICENSING
+════════════════════════════════════════════════════ -->
+<section data-background-color="#0d0000" data-transition="slide">
+  <h2>id Tech — A Engine Licenciável</h2>
+  <p class="sub">O modelo que inspirou Unity, Unreal e a indústria moderna</p>
+
+  <div class="g2" style="align-items:start;margin-bottom:10px;">
+    <div>
+      <h3 style="margin-bottom:8px;">Jogos que usaram a engine</h3>
+      <ul>
+        <li class="fragment"><strong>Heretic</strong> (1994) — Raven Software</li>
+        <li class="fragment"><strong>Hexen</strong> (1995) — Raven Software</li>
+        <li class="fragment"><strong>Strife</strong> (1996) — Rogue Entertainment</li>
+        <li class="fragment"><strong>Quake engine</strong> → Half-Life → Counter-Strike</li>
+      </ul>
+      <div class="hbox fragment" style="margin-top:8px;">
+        <p style="margin:0;font-size:.72em;">
+          Antes da id Software, cada estúdio construía seu motor do zero.
+          <strong>Carmack criou o mercado de engines.</strong>
+        </p>
+      </div>
+    </div>
+    <div>
+      <img class="fragment" src="engine licensing timeline.webp" alt="id Tech engine licensing timeline"
+        style="width:100%;max-height:160px;object-fit:cover;
+               border-radius:6px;border:2px solid #3a0000;
+               box-shadow:0 0 20px rgba(224,48,48,.3);display:block;">
+      <div class="card fragment" style="margin-top:8px;">
+        <h3>Herança direta</h3>
+        <p>id Tech 1 → 2 → 3 → influenciou toda uma geração de FPS e originou o modelo de <strong>licenciamento de engine</strong> como produto.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     17 — DOOM E A GPU
+════════════════════════════════════════════════════ -->
+<section data-background-color="#0d0000" data-transition="convex">
+  <h2>DOOM e a GPU</h2>
+  <p class="sub">Como um jogo acelerou o desenvolvimento do hardware moderno</p>
+
+  <div class="g2" style="align-items:start;margin-bottom:10px;">
+    <div>
+      <img src="id-tech.webp" alt="GPU / evolução do hardware"
+        style="width:100%;max-height:200px;object-fit:cover;
+               border-radius:6px;border:2px solid #3a0000;
+               box-shadow:0 0 20px rgba(224,48,48,.3);display:block;">
+    </div>
+    <div>
+      <ul>
+        <li class="fragment">Em 1993, PCs não tinham <strong>GPU dedicada</strong> — tudo era processado pela CPU</li>
+        <li class="fragment">DOOM gerou demanda massiva por <strong>processamento gráfico intenso</strong></li>
+        <li class="fragment">Fabricantes S3, ATI e a nascente <strong>NVIDIA</strong> aceleraram o desenvolvimento</li>
+        <li class="fragment">DOOM 3 (2004) foi um dos primeiros a exigir <strong>aceleração 3D real</strong></li>
+        <li class="fragment">Sem DOOM, o mercado de GPUs poderia ter demorado <strong>anos a mais</strong> para se consolidar</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="quote fragment">
+    DOOM não apenas rodava em hardware — ele <strong>forçava o hardware a evoluir</strong>.
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     18 — TIMELINE
 ════════════════════════════════════════════════════ -->
 <section data-background-color="#0d0000" data-transition="convex">
   <h2>Linha do Tempo</h2>
@@ -505,7 +828,7 @@
 </section>
 
 <!-- ════════════════════════════════════════════════════
-     11 — CURIOSIDADES
+     19 — CURIOSIDADES
 ════════════════════════════════════════════════════ -->
 <section data-background-color="#0d0000" data-transition="convex">
   <h2>Curiosidades</h2>
@@ -540,7 +863,7 @@
 </section>
 
 <!-- ════════════════════════════════════════════════════
-     12 — CAN IT RUN DOOM?
+     20 — CAN IT RUN DOOM?
 ════════════════════════════════════════════════════ -->
 <section data-background-color="#0d0000" data-transition="fade">
   <h2>Can It Run DOOM?</h2>
@@ -573,7 +896,7 @@
 </section>
 
 <!-- ════════════════════════════════════════════════════
-     12 — LEGADO
+     21 — LEGADO
 ════════════════════════════════════════════════════ -->
 <section data-background-color="#0d0000" data-transition="fade">
   <h2>O Legado</h2>
@@ -606,7 +929,7 @@
 </section>
 
 <!-- ════════════════════════════════════════════════════
-     13 — CONCLUSÃO
+     22 — CONCLUSÃO
 ════════════════════════════════════════════════════ -->
 <section data-background-color="#100000" data-transition="zoom">
   <p class="note" style="font-size:.55em;color:#444;letter-spacing:4px;margin-bottom:0;">Lição final</p>
