@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>DOOM — Raycasting Engine</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0a0000;display:flex;flex-direction:column;align-items:center;
+       justify-content:center;min-height:100vh;font-family:'Courier New',monospace}
+  h1{color:#e03030;font-size:1.5em;letter-spacing:8px;text-transform:uppercase;
+     margin-bottom:10px;text-shadow:0 0 20px #e03030}
+  #wrapper{display:flex;gap:18px;align-items:flex-start;}
+  canvas{display:block;image-rendering:pixelated;border:3px solid #3a0000;
+         box-shadow:0 0 40px rgba(224,48,48,.5);cursor:crosshair}
+  #info{width:200px;background:#110000;border:1px solid #3a0000;border-radius:6px;
+        padding:14px;color:#ccc;font-size:.72em;line-height:1.8;}
+  #info .title{color:#e03030;font-size:.8em;letter-spacing:3px;text-transform:uppercase;
+               margin-bottom:10px;border-bottom:1px solid #3a0000;padding-bottom:6px;}
+  #info p{color:#bbb;font-size:1em;margin-bottom:10px;line-height:1.7;}
+  #info strong{color:#f39c12;}
+  p.controls{margin-top:8px;font-size:.7em;color:#555;letter-spacing:2px;text-align:center}
+  p.controls span{color:#c0392b}
+</style>
+</head>
+<body>
+<h1>⚡ DOOM</h1>
+<div id="wrapper">
+  <canvas id="c" width="640" height="400"></canvas>
+  <div id="info">
+    <div class="title">Como funciona</div>
+    <p>Para cada coluna de pixels, um <strong>raio</strong> é lançado a partir do jogador.</p>
+    <p>Quando o raio bate numa parede, calcula-se a <strong>distância</strong> e desenha-se uma fatia vertical proporcional.</p>
+    <p>Paredes mais próximas = fatia <strong>maior</strong>.</p>
+    <p>Paredes distantes = fatia <strong>menor</strong>.</p>
+  </div>
+</div>
+<p class="controls">Clique para capturar mouse · <span>W/S</span> mover · <span>A/D</span> strafe · <span>←→</span> girar</p>
+<script>
+'use strict';
+// ── Config ───────────────────────────────────────────
+const GW=640,GH=400,VH=320,RW=320,RH=160,TEX=64;
+const canvas=document.getElementById('c');
+const ctx=canvas.getContext('2d');
+const off=document.createElement('canvas');
+off.width=RW;off.height=RH;
+const octx=off.getContext('2d');
+const imgd=octx.createImageData(RW,RH);
+const buf=imgd.data;
+const zbuf=new Float64Array(RW);
+
+// ── Utils ────────────────────────────────────────────
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+function hash(x,y){const n=Math.sin(x*127.1+y*311.7)*43758.5453;return n-Math.floor(n);}
+
+// ── Textures (64×64 RGB) ─────────────────────────────
+function mkTex(fn){
+  const d=new Uint8ClampedArray(TEX*TEX*3);
+  for(let y=0;y<TEX;y++)for(let x=0;x<TEX;x++){
+    const [r,g,b]=fn(x,y);const i=(y*TEX+x)*3;d[i]=r;d[i+1]=g;d[i+2]=b;
+  }return d;
+}
+// Brown brick
+const T1=mkTex((x,y)=>{
+  const row=Math.floor(y/8),sh=(row&1)*16;
+  const mo=y%8<1||(x+sh)%32<1;
+  const n=(hash(x,y)-.5)*40;
+  return mo?[80,72,65]:[clamp(155+n,60,220),clamp(100+n*.6,40,160),clamp(70+n*.4,30,120)];
+});
+// Metal/tech
+const T2=mkTex((x,y)=>{
+  const rivet=x%16<2&&y%16<2,seam=x%16<1||y%32<1;
+  const n=(hash(x*2,y*2)-.5)*25;
+  if(rivet)return[200,200,200];if(seam)return[50,55,60];
+  return[clamp(110+n,55,180),clamp(110+n,55,180),clamp(115+n,60,185)];
+});
+// Dark stone
+const T3=mkTex((x,y)=>{
+  const row=Math.floor(y/18),sh=(row&1)*12;
+  const mo=y%18<1||(x+sh)%24<1;
+  const n=(hash(x+77,y+33)-.5)*55;
+  return mo?[30,25,22]:[clamp(90+n,25,170),clamp(75+n*.7,20,140),clamp(60+n*.5,15,115)];
+});
+// Blood brick
+const T4=mkTex((x,y)=>{
+  const row=Math.floor(y/8),sh=(row&1)*16;
+  const mo=y%8<1||(x+sh)%32<1;
+  const n=(hash(x,y)-.5)*40;
+  const[r,g,b]=mo?[80,72,65]:[clamp(155+n,60,220),clamp(100+n*.6,40,160),clamp(70+n*.4,30,120)];
+  const bl=hash(x+11,y+73)>.72&&y>16&&y<45;
+  return bl?[clamp(r+90,0,230),clamp(g-30,0,80),clamp(b-30,0,70)]:[r,g,b];
+});
+const TEXTURES=[null,T1,T2,T3,T4];
+
+// ── Sprite: Barrel (64×64 RGBA) ──────────────────────
+function mkSpr(fn){
+  const d=new Uint8ClampedArray(TEX*TEX*4);
+  for(let y=0;y<TEX;y++)for(let x=0;x<TEX;x++){
+    const c=fn(x,y);const i=(y*TEX+x)*4;d[i]=c[0];d[i+1]=c[1];d[i+2]=c[2];d[i+3]=c[3];
+  }return d;
+}
+const SPR_BARREL=mkSpr((x,y)=>{
+  const cx=x-32,cy=y-36;
+  if((cx/19)**2+(cy/26)**2>1)return[0,0,0,0];
+  const band=y%14<2,n=(hash(x,y)-.5)*20;
+  const sh=1-Math.abs(cx)/19*.55;
+  const[r,g,b]=band?[28,28,28]:[clamp(165+n,75,225),clamp(108+n*.6,45,155),clamp(38+n*.4,15,85)];
+  return[r*sh|0,g*sh|0,b*sh|0,255];
+});
+
+// ── Map ──────────────────────────────────────────────
+const MAP_W=16,MAP_H=16;
+const MAP=[
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,0,2,2,2,0,0,4,4,4,0,0,1,0,0,1],
+  [1,0,2,0,0,0,0,4,0,4,0,0,1,0,0,1],
+  [1,0,2,0,0,0,0,0,0,4,0,0,0,0,0,1],
+  [1,0,0,0,0,0,0,0,0,4,0,2,2,2,0,1],
+  [1,0,0,0,1,1,0,0,0,0,0,0,0,2,0,1],
+  [1,0,0,0,0,0,0,0,0,0,0,0,0,2,0,1],
+  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,0,3,3,0,0,0,0,0,0,0,0,1,1,0,1],
+  [1,0,0,3,0,0,0,0,1,0,0,0,0,1,0,1],
+  [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
+  [1,0,0,0,0,0,0,0,0,0,0,0,3,3,0,1],
+  [1,0,1,0,0,0,0,0,0,0,0,0,3,0,0,1],
+  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+];
+function isWall(x,y){
+  const mx=Math.floor(x),my=Math.floor(y);
+  return mx<0||my<0||mx>=MAP_W||my>=MAP_H||MAP[my][mx]!==0;
+}
+
+// ── Sprites ──────────────────────────────────────────
+const SPRITES=[
+  {x:3.5,y:3.5,spr:SPR_BARREL},{x:5.5,y:8.5,spr:SPR_BARREL},
+  {x:11.5,y:4.5,spr:SPR_BARREL},{x:7.5,y:12.5,spr:SPR_BARREL},
+  {x:13.5,y:10.5,spr:SPR_BARREL},{x:9.5,y:7.5,spr:SPR_BARREL},
+];
+
+// ── Player ───────────────────────────────────────────
+const P={x:2.5,y:8.5,a:0,fov:Math.PI/3,spd:.055,hp:100,ammo:50};
+let bobT=0,bobAmt=0;
+
+// ── Input ─────────────────────────────────────────────
+const K={};
+document.addEventListener('keydown',e=>{K[e.code]=1;e.preventDefault();});
+document.addEventListener('keyup',e=>{K[e.code]=0;});
+let mdx=0;
+canvas.addEventListener('click',()=>canvas.requestPointerLock());
+document.addEventListener('mousemove',e=>{
+  if(document.pointerLockElement===canvas)mdx+=e.movementX*.003;
+});
+
+// ── Raycasting DDA ───────────────────────────────────
+function castRay(angle){
+  const cos=Math.cos(angle),sin=Math.sin(angle);
+  let mx=Math.floor(P.x),my=Math.floor(P.y);
+  const ddx=Math.abs(1/cos),ddy=Math.abs(1/sin);
+  let sx,sy,sdx,sdy;
+  if(cos<0){sx=-1;sdx=(P.x-mx)*ddx;}else{sx=1;sdx=(mx+1-P.x)*ddx;}
+  if(sin<0){sy=-1;sdy=(P.y-my)*ddy;}else{sy=1;sdy=(my+1-P.y)*ddy;}
+  let side=0;
+  for(;;){
+    if(sdx<sdy){sdx+=ddx;mx+=sx;side=0;}
+    else{sdy+=ddy;my+=sy;side=1;}
+    if(MAP[my]?.[mx])break;
+  }
+  const perp=Math.abs(side===0?(mx-P.x+(1-sx)/2)/cos:(my-P.y+(1-sy)/2)/sin);
+  let wx=side===0?P.y+perp*sin:P.x+perp*cos;
+  wx-=Math.floor(wx);
+  let tx=Math.floor(wx*TEX);
+  if(side===0&&cos>0)tx=TEX-tx-1;
+  if(side===1&&sin<0)tx=TEX-tx-1;
+  return{perp,side,mx,my,tx};
+}
+
+// ── Render 3D ────────────────────────────────────────
+function render(){
+  // Sky
+  for(let y=0;y<RH/2;y++){
+    const r=clamp(22+(y/(RH/2))*28,0,55)|0;
+    for(let x=0;x<RW;x++){const i=(y*RW+x)*4;buf[i]=r;buf[i+1]=0;buf[i+2]=0;buf[i+3]=255;}
+  }
+  // Floor
+  for(let y=RH/2;y<RH;y++){
+    const t=(y-RH/2)/(RH/2);
+    const r=clamp(32+t*18,0,70)|0,g=clamp(22+t*12,0,48)|0,b=clamp(15+t*8,0,36)|0;
+    for(let x=0;x<RW;x++){const i=(y*RW+x)*4;buf[i]=r;buf[i+1]=g;buf[i+2]=b;buf[i+3]=255;}
+  }
+  // Walls
+  for(let col=0;col<RW;col++){
+    const angle=P.a-P.fov/2+(col/RW)*P.fov;
+    const{perp,side,mx,my,tx}=castRay(angle);
+    zbuf[col]=perp;
+    const lh=Math.min(RH*4,(RH/perp)|0);
+    const y0=Math.max(0,((RH-lh)/2)|0);
+    const y1=Math.min(RH,((RH+lh)/2)|0);
+    const wt=MAP[my]?.[mx]??1;
+    const tex=TEXTURES[wt]??T1;
+    const step=TEX/lh;
+    let tp=(y0-RH/2+lh/2)*step;
+    const sh=clamp(1-perp/14,.06,1)*(side===1?.6:1);
+    for(let y=y0;y<y1;y++){
+      const ty=clamp(Math.floor(tp)&(TEX-1),0,TEX-1);tp+=step;
+      const ti=(ty*TEX+tx)*3;
+      const pi=(y*RW+col)*4;
+      buf[pi]=tex[ti]*sh;buf[pi+1]=tex[ti+1]*sh;buf[pi+2]=tex[ti+2]*sh;buf[pi+3]=255;
+    }
+  }
+  // Sprites
+  const sorted=SPRITES.map(s=>({...s,dx:s.x-P.x,dy:s.y-P.y,d2:(s.x-P.x)**2+(s.y-P.y)**2}))
+    .sort((a,b)=>b.d2-a.d2);
+  for(const sp of sorted){
+    const dist=Math.sqrt(sp.d2);if(dist<.4)continue;
+    let sa=Math.atan2(sp.dy,sp.dx)-P.a;
+    while(sa>Math.PI)sa-=Math.PI*2;while(sa<-Math.PI)sa+=Math.PI*2;
+    if(Math.abs(sa)>P.fov*.8)continue;
+    const screenX=((sa/P.fov)+.5)*RW;
+    const sh2=clamp((RH/dist)|0,1,RH);
+    const x0=(screenX-sh2/2)|0,y0=((RH-sh2)/2)|0;
+    const shade=clamp(1-dist/14,.06,1);
+    for(let col=Math.max(0,x0);col<Math.min(RW,x0+sh2);col++){
+      if(zbuf[col]<dist)continue;
+      const stx=Math.floor((col-x0)/sh2*TEX);
+      for(let row=0;row<sh2;row++){
+        const y=y0+row;if(y<0||y>=RH)continue;
+        const sty=Math.floor(row/sh2*TEX);
+        const ti=(sty*TEX+stx)*4;if(sp.spr[ti+3]<128)continue;
+        const pi=(y*RW+col)*4;
+        buf[pi]=sp.spr[ti]*shade;buf[pi+1]=sp.spr[ti+1]*shade;
+        buf[pi+2]=sp.spr[ti+2]*shade;buf[pi+3]=255;
+      }
+    }
+  }
+  octx.putImageData(imgd,0,0);
+  ctx.imageSmoothingEnabled=false;
+  ctx.drawImage(off,0,0,GW,VH);
+}
+
+// ── Weapon (Shotgun) ─────────────────────────────────
+function drawWeapon(){
+  const bx=Math.cos(bobT)*bobAmt*3,by=Math.sin(bobT*2)*bobAmt*7;
+  const wx=GW/2+68+bx,wy=VH-75+by;
+  ctx.save();ctx.beginPath();ctx.rect(0,0,GW,VH);ctx.clip();
+  // Barrels
+  ctx.fillStyle='#1c1c1c';ctx.fillRect(wx-24,wy,12,105);ctx.fillRect(wx-9,wy,12,105);
+  ctx.fillStyle='#353535';ctx.fillRect(wx-23,wy,3,105);ctx.fillRect(wx-8,wy,3,105);
+  // Band
+  ctx.fillStyle='#111';ctx.fillRect(wx-26,wy+28,40,5);
+  // Pump
+  ctx.fillStyle='#7a4020';ctx.fillRect(wx-27,wy+48,42,17);
+  ctx.fillStyle='#4a2810';ctx.fillRect(wx-27,wy+48,5,17);
+  // Receiver
+  ctx.fillStyle='#181818';ctx.fillRect(wx-22,wy+65,38,28);
+  ctx.fillStyle='#282828';ctx.fillRect(wx-22,wy+65,4,28);
+  // Stock
+  ctx.fillStyle='#7a4020';
+  ctx.beginPath();ctx.moveTo(wx+16,wy+70);ctx.lineTo(wx+52,wy+85);
+  ctx.lineTo(wx+52,wy+108);ctx.lineTo(wx+10,wy+98);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#4a2810';
+  ctx.beginPath();ctx.moveTo(wx+16,wy+70);ctx.lineTo(wx+52,wy+85);
+  ctx.lineTo(wx+52,wy+90);ctx.lineTo(wx+16,wy+75);ctx.closePath();ctx.fill();
+  // Trigger guard
+  ctx.strokeStyle='#282828';ctx.lineWidth=3;
+  ctx.beginPath();ctx.arc(wx+6,wy+91,11,0,Math.PI);ctx.stroke();
+  // Muzzle
+  ctx.fillStyle='#0d0d0d';ctx.fillRect(wx-26,wy-6,15,9);ctx.fillRect(wx-9,wy-6,15,9);
+  ctx.restore();
+}
+
+// ── HUD ──────────────────────────────────────────────
+function drawHUD(){
+  const hy=VH,hh=GH-VH;
+  ctx.fillStyle='#1a1a1a';ctx.fillRect(0,hy,GW,hh);
+  ctx.fillStyle='#0d0d0d';ctx.fillRect(0,hy,GW,2);
+  ctx.strokeStyle='#3a0000';ctx.lineWidth=1.5;ctx.strokeRect(2,hy+2,GW-4,hh-3);
+  const cy=hy+hh/2;
+  ctx.textAlign='center';
+  // AMMO
+  ctx.fillStyle='#666';ctx.font='10px "Courier New"';ctx.fillText('AMMO',50,cy-16);
+  ctx.fillStyle='#f0d000';ctx.font='bold 34px "Courier New"';ctx.fillText(String(P.ammo).padStart(3,' '),50,cy+13);
+  // HEALTH
+  ctx.fillStyle='#666';ctx.font='10px "Courier New"';ctx.fillText('HLTH%',GW-82,cy-16);
+  const hc=P.hp>60?'#00bb00':P.hp>30?'#cccc00':'#cc0000';
+  ctx.fillStyle=hc;ctx.font='bold 28px "Courier New"';ctx.fillText(P.hp+'%',GW-82,cy+12);
+  // ARMOR
+  ctx.fillStyle='#666';ctx.font='10px "Courier New"';ctx.fillText('ARMO%',GW-192,cy-16);
+  ctx.fillStyle='#4488ff';ctx.font='bold 20px "Courier New"';ctx.fillText('100%',GW-192,cy+9);
+  // ARMS
+  ctx.fillStyle='#555';ctx.font='10px "Courier New"';ctx.fillText('ARMS',170,cy-16);
+  ctx.fillStyle='#c0392b';ctx.font='bold 13px "Courier New"';ctx.fillText('2',152,cy+5);
+  ctx.fillStyle='#3a3a3a';ctx.fillText('3 4 5 6 7',176,cy+5);
+  // Face
+  drawFace(GW/2,cy);
+  // Dividers
+  ctx.strokeStyle='#2a2a2a';ctx.lineWidth=1;
+  [115,230,GW-115,GW-220].forEach(x=>{
+    ctx.beginPath();ctx.moveTo(x,hy+6);ctx.lineTo(x,hy+hh-6);ctx.stroke();
+  });
+}
+function drawFace(cx,cy){
+  ctx.fillStyle='#c8a060';ctx.beginPath();ctx.ellipse(cx,cy,20,22,0,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#557755';ctx.fillRect(cx-20,cy-22,40,14);
+  ctx.fillStyle='#446644';ctx.fillRect(cx-20,cy-22,40,4);
+  ctx.fillStyle='#fff';ctx.fillRect(cx-13,cy-9,8,7);ctx.fillRect(cx+5,cy-9,8,7);
+  ctx.fillStyle='#222';ctx.fillRect(cx-11,cy-8,4,5);ctx.fillRect(cx+7,cy-8,4,5);
+  ctx.fillStyle='#a07040';ctx.fillRect(cx-2,cy-1,4,5);
+  ctx.fillStyle='#703010';ctx.fillRect(cx-7,cy+8,14,3);
+}
+
+// ── Minimap ───────────────────────────────────────────
+function drawMinimap(){
+  const TILE=7,COLS=MAP_W,ROWS=MAP_H;
+  const mw=COLS*TILE,mh=ROWS*TILE;
+  const ox=GW-mw-10,oy=10;
+  // Fundo semitransparente
+  ctx.fillStyle='rgba(0,0,0,.72)';ctx.fillRect(ox-2,oy-2,mw+4,mh+4);
+  ctx.strokeStyle='#3a0000';ctx.lineWidth=1;ctx.strokeRect(ox-2,oy-2,mw+4,mh+4);
+  // Células
+  for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){
+    const w=MAP[y][x];
+    if(w){
+      const c=w===2?'#3a4a5a':w===3?'#2a1a1a':w===4?'#5a1a0a':'#5a1a0a';
+      ctx.fillStyle=c;
+    } else {
+      ctx.fillStyle='#0d0d0d';
+    }
+    ctx.fillRect(ox+x*TILE,oy+y*TILE,TILE-1,TILE-1);
+  }
+  // Raios do FOV
+  const numRays=40;
+  for(let i=0;i<numRays;i++){
+    const angle=P.a-P.fov/2+(i/numRays)*P.fov;
+    const{perp}=castRay(angle);
+    const ex=P.x+Math.cos(angle)*perp;
+    const ey=P.y+Math.sin(angle)*perp;
+    ctx.strokeStyle='rgba(255,120,0,.18)';ctx.lineWidth=.8;
+    ctx.beginPath();
+    ctx.moveTo(ox+P.x*TILE,oy+P.y*TILE);
+    ctx.lineTo(ox+ex*TILE,oy+ey*TILE);
+    ctx.stroke();
+  }
+  // Direção do player
+  ctx.strokeStyle='#ff6600';ctx.lineWidth=1.5;
+  ctx.beginPath();
+  ctx.moveTo(ox+P.x*TILE,oy+P.y*TILE);
+  ctx.lineTo(ox+(P.x+Math.cos(P.a)*2)*TILE,oy+(P.y+Math.sin(P.a)*2)*TILE);
+  ctx.stroke();
+  // Ponto do player
+  ctx.fillStyle='#ff3300';
+  ctx.beginPath();ctx.arc(ox+P.x*TILE,oy+P.y*TILE,3,0,Math.PI*2);ctx.fill();
+}
+
+// ── Crosshair ────────────────────────────────────────
+function drawCrosshair(){
+  const cx=GW/2,cy=VH/2;
+  ctx.strokeStyle='rgba(255,255,255,.6)';ctx.lineWidth=1.5;
+  ctx.beginPath();
+  ctx.moveTo(cx-10,cy);ctx.lineTo(cx-4,cy);ctx.moveTo(cx+4,cy);ctx.lineTo(cx+10,cy);
+  ctx.moveTo(cx,cy-10);ctx.lineTo(cx,cy-4);ctx.moveTo(cx,cy+4);ctx.lineTo(cx,cy+10);
+  ctx.stroke();
+}
+
+// ── Movement ─────────────────────────────────────────
+function move(){
+  P.a+=mdx;mdx=0;
+  if(K.ArrowLeft)P.a-=.03;if(K.ArrowRight)P.a+=.03;
+  const cos=Math.cos(P.a),sin=Math.sin(P.a);
+  let nx=P.x,ny=P.y,moving=false;
+  if(K.KeyW||K.ArrowUp){nx+=cos*P.spd;ny+=sin*P.spd;moving=true;}
+  if(K.KeyS||K.ArrowDown){nx-=cos*P.spd;ny-=sin*P.spd;moving=true;}
+  if(K.KeyA){nx+=sin*P.spd;ny-=cos*P.spd;moving=true;}
+  if(K.KeyD){nx-=sin*P.spd;ny+=cos*P.spd;moving=true;}
+  if(!isWall(nx,P.y))P.x=nx;if(!isWall(P.x,ny))P.y=ny;
+  if(moving){bobT+=.12;bobAmt=Math.min(1,bobAmt+.15);}
+  else{bobAmt=Math.max(0,bobAmt-.1);}
+}
+
+// ── Loop ─────────────────────────────────────────────
+let fps=0,fc=0,ft=0,lt=0;
+function loop(ts){
+  const dt=ts-lt;lt=ts;ft+=dt;fc++;
+  if(ft>=500){fps=(fc/(ft/1000))|0;fc=0;ft=0;}
+  move();render();drawWeapon();drawMinimap();drawHUD();drawCrosshair();
+  ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(4,4,58,18);
+  ctx.fillStyle='#0f0';ctx.font='11px "Courier New"';
+  ctx.textAlign='left';ctx.fillText('FPS:'+fps,8,16);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
