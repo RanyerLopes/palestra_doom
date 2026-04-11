@@ -404,14 +404,7 @@
         <h3>❌ O que aconteceu?</h3>
         <p>Carmack e Romero rejeitaram a proposta. Tom Hall foi <strong>demitido em agosto de 1993</strong>, meses antes do lançamento.</p>
       </div>
-      <div class="hbox fragment" style="margin-top:8px;">
-        <p style="margin:0;font-size:.72em;">
-          O conflito entre <strong>visão narrativa</strong> e <strong>puro gameplay</strong>
-          definiu o que o DOOM se tornaria — e ensinou que às vezes
-          <strong>o que você corta</strong> importa tanto quanto o que você mantém.
-        </p>
-      </div>
-      <div class="quote fragment" style="margin-top:14px;font-size:.86em;">
+      <div class="quote fragment" style="margin-top:16px;font-size:.95em;">
         "História em um jogo é como história em filme pornô. Espera-se que esteja lá, mas não é tão importante."
         <em>— John Carmack</em>
       </div>
@@ -443,11 +436,13 @@
       </ul>
     </div>
     <div>
+      <img src="img/NeXTcube.webp" alt="NeXTcube"
+           style="width:100%;height:160px;object-fit:cover;border-radius:6px;border:2px solid #555;margin-bottom:10px;">
       <div class="quote fragment">
         "O NeXT era uma máquina de verdade para programadores de verdade. Era onde a magia acontecia."
         <em>— John Carmack</em>
       </div>
-      <div class="hbox fragment" style="margin-top:12px;">
+      <div class="hbox fragment" style="margin-top:10px;">
         <p style="margin:0;">O NeXTSTEP foi a base do <strong>macOS moderno</strong> — a Apple comprou a NeXT em 1997 e trouxe Jobs de volta junto.</p>
       </div>
     </div>
@@ -472,12 +467,18 @@
       </ul>
     </div>
     <div>
+      <div style="display:flex;gap:8px;margin-bottom:10px;">
+        <img src="img/MS-DOS.jpg" alt="MS-DOS"
+             style="width:50%;height:160px;object-fit:cover;border-radius:6px;border:2px solid #555;">
+        <img src="img/DOS4GWpng.png" alt="DOS4GW"
+             style="width:50%;height:160px;object-fit:cover;border-radius:6px;border:2px solid #555;">
+      </div>
       <div class="stats">
         <div class="stat"><b>640KB</b><s>Limite do DOS</s></div>
         <div class="stat"><b>32MB</b><s>Com DOS4GW</s></div>
         <div class="stat"><b>4MB</b><s>Mínimo do DOOM</s></div>
       </div>
-      <div class="hbox fragment" style="margin-top:14px;">
+      <div class="hbox fragment" style="margin-top:10px;">
         <p style="margin:0;">Bill Gates chegou a dizer que <strong>"640KB deveria ser suficiente para qualquer pessoa"</strong> — o DOOM provou o contrário.</p>
       </div>
     </div>
@@ -518,28 +519,60 @@
      8d — FERRAMENTAS: Internas
 ════════════════════════════════════════════════════ -->
 <section data-background-color="#0d0000" data-transition="fade">
-  <span class="badge" style="margin-bottom:10px;display:inline-block;">FERRAMENTAS 4/4</span>
+  <span class="badge" style="margin-bottom:8px;display:inline-block;">FERRAMENTAS 4/4</span>
   <h2>Ferramentas Internas</h2>
-  <p class="sub">Se não existe, a gente constrói</p>
-  <div class="g2" style="align-items:start;gap:20px;">
-    <div>
-      <ul>
-        <li class="fragment"><strong>DoomEd</strong> — editor de mapas feito em NeXT/Objective-C por Romero</li>
-        <li class="fragment"><strong>DMAPEDIT</strong> — versão DOS do editor para outros membros da equipe</li>
-        <li class="fragment"><strong>BSP Compiler</strong> — pré-calculava a árvore BSP de cada mapa</li>
-        <li class="fragment"><strong>WARM</strong> — ferramenta que empacotava tudo no arquivo WAD final</li>
-        <li class="fragment">Nenhuma ferramenta comercial da época era <strong>rápida ou flexível o suficiente</strong></li>
-      </ul>
-    </div>
-    <div>
-      <div class="quote fragment">
-        "Construímos nossas próprias ferramentas porque precisávamos de coisas que não existiam. E isso nos deu uma vantagem enorme."
-        <em>— John Romero</em>
+  <p class="sub">Nenhuma ferramenta comercial era boa o suficiente — então eles criaram as próprias</p>
+
+  <div class="g3" style="align-items:start;gap:14px;margin-top:10px;">
+
+    <div class="fragment">
+      <div style="position:relative;">
+        <img src="img/DMapEdit.png" alt="DMapEdit"
+          style="width:100%;height:160px;object-fit:cover;object-position:top;
+                 border-radius:6px;border:2px solid #3a0000;
+                 box-shadow:0 0 16px rgba(224,48,48,.3);display:block;">
+        <span style="position:absolute;top:6px;left:6px;background:#e03030;color:#fff;
+                     font-family:'Orbitron',sans-serif;font-size:.55em;font-weight:700;
+                     padding:2px 8px;border-radius:3px;letter-spacing:1px;">DMAPEDIT</span>
       </div>
-      <div class="hbox fragment" style="margin-top:12px;">
-        <p style="margin:0;">O DoomEd foi tão bom que a comunidade o usou por anos para criar <strong>WADs customizados</strong> — bem antes do modding ser mainstream.</p>
+      <div style="margin-top:8px;">
+        <h3 style="font-size:1em!important;margin-bottom:4px;">Editor de Mapas DOS</h3>
+        <p style="font-size:.85em!important;color:#bbb;">Versão DOS do editor de níveis. Mostra os <strong>setores coloridos</strong> numerados — cada cor é uma região do mapa com propriedades próprias (altura, luz, textura).</p>
       </div>
     </div>
+
+    <div class="fragment">
+      <div style="position:relative;">
+        <img src="img/BSP Compiler.webp" alt="BSP Compiler"
+          style="width:100%;height:160px;object-fit:cover;object-position:top;
+                 border-radius:6px;border:2px solid #3a0000;
+                 box-shadow:0 0 16px rgba(224,48,48,.3);display:block;">
+        <span style="position:absolute;top:6px;left:6px;background:#e03030;color:#fff;
+                     font-family:'Orbitron',sans-serif;font-size:.55em;font-weight:700;
+                     padding:2px 8px;border-radius:3px;letter-spacing:1px;">BSP COMPILER</span>
+      </div>
+      <div style="margin-top:8px;">
+        <h3 style="font-size:1em!important;margin-bottom:4px;">Compilador de Árvore BSP</h3>
+        <p style="font-size:.85em!important;color:#bbb;">Processa o mapa e gera a <strong>árvore BSP</strong> em wireframe — as linhas brancas são os planos de partição que definem a ordem de renderização. Rodava offline antes do jogo.</p>
+      </div>
+    </div>
+
+    <div class="fragment">
+      <div style="position:relative;">
+        <img src="img/redoomed_screenshot.png" alt="Redoomed Editor"
+          style="width:100%;height:160px;object-fit:cover;object-position:top;
+                 border-radius:6px;border:2px solid #3a0000;
+                 box-shadow:0 0 16px rgba(224,48,48,.3);display:block;">
+        <span style="position:absolute;top:6px;left:6px;background:#e03030;color:#fff;
+                     font-family:'Orbitron',sans-serif;font-size:.55em;font-weight:700;
+                     padding:2px 8px;border-radius:3px;letter-spacing:1px;">NODE BUILDER</span>
+      </div>
+      <div style="margin-top:8px;">
+        <h3 style="font-size:1em!important;margin-bottom:4px;">Editor Visual Completo</h3>
+        <p style="font-size:.85em!important;color:#bbb;">Editor com <strong>browser de texturas</strong> integrado, mapa 2D e painel de propriedades — o tipo de ferramenta que a equipe construiu do zero pois não existia nada similar no mercado.</p>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -560,13 +593,12 @@
       </ul>
     </div>
     <div>
+      <img src="img/SGI workstations.jpg" alt="SGI Workstation" class="fragment"
+        style="width:100%;height:160px;object-fit:cover;border-radius:6px;border:2px solid #3a0000;
+               box-shadow:0 0 20px rgba(224,48,48,.3);display:block;margin-bottom:10px;">
+      <p class="note fragment" style="text-align:center;margin-bottom:10px;">Uma <strong>SGI Workstation</strong> — o tipo de hardware necessário para 3D real em 1993. Custava entre <strong>$10k e $100k</strong>.</p>
       <div class="hbox fragment" style="border-color:rgba(243,156,18,.4);background:rgba(243,156,18,.08);">
         <p style="margin:0;"><span class="y">A sacada de Carmack:</span> o cérebro humano <strong>não precisa de 3D real</strong> para acreditar estar em 3D. Basta a perspectiva ser convincente.</p>
-      </div>
-      <div class="stats fragment" style="margin-top:14px;">
-        <div class="stat"><b>486</b><s>CPU alvo</s></div>
-        <div class="stat"><b>~$15k</b><s>3D real na época</s></div>
-        <div class="stat"><b>$50</b><s>Custo do DOOM</s></div>
       </div>
     </div>
   </div>
@@ -671,7 +703,9 @@
   <p class="sub">Carmack levou o raycasting a um nível completamente novo</p>
   <div class="g2" style="align-items:start;gap:20px;">
     <div>
-      <h3 style="margin-bottom:10px;">Wolfenstein 3D (1992)</h3>
+      <img src="img/Wolfenstein 3D (1992).jpg" alt="Wolfenstein 3D (1992)"
+           style="width:100%;height:110px;object-fit:cover;border-radius:6px;border:2px solid #555;margin-bottom:6px;">
+      <h3 style="margin-bottom:8px;">Wolfenstein 3D (1992)</h3>
       <ul>
         <li class="fragment">Raycasting puro — paredes <strong>sempre a 90°</strong></li>
         <li class="fragment">Teto e chão com <strong>cor sólida</strong></li>
@@ -680,7 +714,9 @@
       </ul>
     </div>
     <div>
-      <h3 style="margin-bottom:10px;">DOOM (1993)</h3>
+      <img src="img/DOOM (1993).avif" alt="DOOM (1993)"
+           style="width:100%;height:110px;object-fit:cover;border-radius:6px;border:2px solid #e03030;margin-bottom:6px;">
+      <h3 style="margin-bottom:8px;">DOOM (1993)</h3>
       <ul>
         <li class="fragment">Paredes em <strong>qualquer ângulo</strong></li>
         <li class="fragment"><strong>Alturas variáveis</strong> — degraus, plataformas, fossos</li>
@@ -690,7 +726,7 @@
       </ul>
     </div>
   </div>
-  <div class="quote fragment" style="margin-top:14px;">
+  <div class="quote fragment" style="margin-top:10px;">
     "Wolfenstein foi o protótipo. O DOOM foi a revolução."
     <em>— John Romero</em>
   </div>
@@ -892,10 +928,11 @@
       </ul>
     </div>
     <div>
-      <div class="hbox fragment" style="border-color:rgba(224,48,48,.5);background:rgba(224,48,48,.1);">
-        <p style="margin:0;">A ironia: as redes <strong>Novell NetWare</strong> que as empresas tinham para trabalho eram exatamente o que DOOM precisava para funcionar em rede. 😈</p>
-      </div>
-      <div class="stats fragment" style="margin-top:14px;">
+      <img src="img/porta666.webp" alt="Porta 666 registrada na IANA" class="fragment"
+        style="width:100%;border-radius:6px;border:2px solid #3a0000;
+               box-shadow:0 0 20px rgba(224,48,48,.4);display:block;margin-bottom:12px;">
+      <p class="note fragment" style="text-align:center;margin-bottom:10px;">Registro oficial da porta 666 na lista de portas TCP/IP da IANA — <strong>"Doom, first online first-person shooter"</strong></p>
+      <div class="stats fragment">
         <div class="stat"><b>666</b><s>Porta registrada</s></div>
         <div class="stat"><b>4</b><s>Jogadores max</s></div>
         <div class="stat"><b>~1ms</b><s>Latência LAN</s></div>
@@ -1255,9 +1292,9 @@
     <div style="text-align:left;">
       <h3 style="margin-bottom:10px;">Me encontre em</h3>
       <ul>
-        <li class="fragment">Portfólio, redes e projetos</li>
-        <li class="fragment">Links organizados no QR ao lado</li>
-        <li class="fragment" style="word-break:break-all;font-size:.85em;">
+        <li>Portfólio, redes e projetos</li>
+        <li>Links organizados no QR ao lado</li>
+        <li style="word-break:break-all;font-size:.85em;">
           <span style="color:#888;">linktree-ranyer.vercel.app</span>
         </li>
       </ul>
@@ -1275,9 +1312,9 @@
     <div style="text-align:right;">
       <h3 style="margin-bottom:10px;">Ranyer Lopes</h3>
       <ul style="text-align:right;">
-        <li class="fragment">Desenvolvedor Full Stack</li>
-        <li class="fragment">Entusiasta em IA</li>
-        <li class="fragment">Gamer, músico & desenhista</li>
+        <li>Desenvolvedor Full Stack</li>
+        <li>Entusiasta em IA</li>
+        <li>Gamer, músico & desenhista</li>
       </ul>
     </div>
   </div>
