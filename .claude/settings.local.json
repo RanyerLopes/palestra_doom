@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git lfs *)",
+      "Bash(git filter-repo *)",
+      "Bash(git count-objects *)"
+    ]
+  }
+}
